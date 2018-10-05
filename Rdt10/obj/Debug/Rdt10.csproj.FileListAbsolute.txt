@@ -1,0 +1,31 @@
+c:\users\tvokac\documents\visual studio 2015\Projects\Rdt10\Rdt10\bin\Debug\Rdt10.exe.config
+c:\users\tvokac\documents\visual studio 2015\Projects\Rdt10\Rdt10\bin\Debug\Rdt10.exe
+c:\users\tvokac\documents\visual studio 2015\Projects\Rdt10\Rdt10\bin\Debug\Rdt10.pdb
+c:\users\tvokac\documents\visual studio 2015\Projects\Rdt10\Rdt10\obj\Debug\Rdt10.csprojResolveAssemblyReference.cache
+c:\users\tvokac\documents\visual studio 2015\Projects\Rdt10\Rdt10\obj\Debug\Rdt10.exe
+c:\users\tvokac\documents\visual studio 2015\Projects\Rdt10\Rdt10\obj\Debug\Rdt10.pdb
+c:\users\tvokac\documents\visual studio 2015\Projects\Rdt10\Rdt10\bin\Debug\RedditSharp.dll
+c:\users\tvokac\documents\visual studio 2015\Projects\Rdt10\Rdt10\bin\Debug\Newtonsoft.Json.dll
+c:\users\tvokac\documents\visual studio 2015\Projects\Rdt10\Rdt10\bin\Debug\HtmlAgilityPack.dll
+c:\users\tvokac\documents\visual studio 2015\Projects\Rdt10\Rdt10\bin\Debug\RedditSharp.pdb
+D:\tmw\Projs\Rdt10\Rdt10\obj\Debug\Rdt10.csprojResolveAssemblyReference.cache
+D:\tmw\Projs\Rdt10\Rdt10\obj\Debug\Rdt10.csproj.CoreCompileInputs.cache
+D:\tmw\Projs\Rdt10\Rdt10\obj\Debug\Rdt10.exe
+D:\tmw\Projs\Rdt10\Rdt10\obj\Debug\Rdt10.pdb
+D:\tmw\Projs\Rdt10\Rdt10\bin\Debug\Rdt10.exe.config
+D:\tmw\Projs\Rdt10\Rdt10\bin\Debug\Rdt10.exe
+D:\tmw\Projs\Rdt10\Rdt10\bin\Debug\Rdt10.pdb
+D:\tmw\Projs\Rdt10\Rdt10\bin\Debug\Newtonsoft.Json.dll
+D:\tmw\Projs\Rdt10\Rdt10\bin\Debug\RedditSharp.dll
+D:\tmw\Projs\Rdt10\Rdt10\bin\Debug\Newtonsoft.Json.xml
+D:\tmw\Projs\Rdt10\Rdt10\bin\Debug\RedditSharp.pdb
+D:\tmw\Projs\Rdt10\Rdt10\bin\Debug\RedditSharp.xml
+D:\GitRepos\Reddit Comment Stasher\Reddit%20Comment%20Stasher\Rdt10\Rdt10\obj\Debug\Rdt10.csproj.CoreCompileInputs.cache
+D:\GitRepos\Reddit Comment Stasher\Reddit%20Comment%20Stasher\Rdt10\Rdt10\bin\Debug\Rdt10.exe.config
+D:\GitRepos\Reddit Comment Stasher\Reddit%20Comment%20Stasher\Rdt10\Rdt10\bin\Debug\Rdt10.exe
+D:\GitRepos\Reddit Comment Stasher\Reddit%20Comment%20Stasher\Rdt10\Rdt10\bin\Debug\Rdt10.pdb
+D:\GitRepos\Reddit Comment Stasher\Reddit%20Comment%20Stasher\Rdt10\Rdt10\bin\Debug\Newtonsoft.Json.dll
+D:\GitRepos\Reddit Comment Stasher\Reddit%20Comment%20Stasher\Rdt10\Rdt10\bin\Debug\RedditSharp.dll
+D:\GitRepos\Reddit Comment Stasher\Reddit%20Comment%20Stasher\Rdt10\Rdt10\bin\Debug\RedditSharp.pdb
+D:\GitRepos\Reddit Comment Stasher\Reddit%20Comment%20Stasher\Rdt10\Rdt10\obj\Debug\Rdt10.exe
+D:\GitRepos\Reddit Comment Stasher\Reddit%20Comment%20Stasher\Rdt10\Rdt10\obj\Debug\Rdt10.pdb
