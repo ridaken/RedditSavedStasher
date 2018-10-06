@@ -59,7 +59,8 @@ namespace Rdt10
 
             Console.WriteLine("Retreiving saved items. This may take several minutes if you have a lot of saved stuff.");
             var savedList = reddit.User.GetSaved();
-            
+
+            var failedEntries = new List<VotableThing>();
             using (var writer = new StreamWriter(output, append:false))
             {
                 writer.WriteLine("Subreddit,Upvotes,Content,Comments URL,Content URL,Date posted");
@@ -67,47 +68,84 @@ namespace Rdt10
 
                 foreach (var post in savedList)
                 {
-                    Console.WriteLine($"Backing up saved item {i}...");
-                    if(post.GetType() == typeof(Comment))
+                    try
                     {
-                        var comment = (Comment)post;
-                        writer.WriteLine(string.Format(
-                            $"{Filter(comment.Subreddit)}," +
-                            $"{Filter(comment.Upvotes.ToString())}," +
-                            $"{Filter(comment.Body)}," +
-                            $"{Filter(comment.Shortlink)}," +
-                            $"{Filter("(comment, not post)")}," +
-                            $"{Filter(comment.Created.ToString())},"));
+                        Console.WriteLine($"Backing up saved item {i}...");
+                        if (post.GetType() == typeof(Comment))
+                        {
+                            var comment = (Comment)post;
+                            writer.WriteLine(string.Format(
+                                $"{Filter(comment.Subreddit)}," +
+                                $"{Filter(comment.Upvotes.ToString())}," +
+                                $"{Filter(comment.Body)}," +
+                                $"{Filter(comment.Shortlink)}," +
+                                $"(comment, not post)," +
+                                $"{Filter(comment.Created.ToString())},"));
+                        }
+                        else if (post.GetType() == typeof(Post))
+                        {
+                            var p = (Post)post;
+                            writer.WriteLine(string.Format(
+                                $"{Filter(p.SubredditName)}," +
+                                $"{Filter(p.Upvotes.ToString())}," +
+                                $"{Filter(p.Title)}," +
+                                $"{Filter(p.Shortlink)}," +
+                                $"{Filter(p.Url.ToString())}," +
+                                $"{Filter(p.Created.ToString())},"));
+                        }
+                        else
+                        {
+                            //Theoretically, this shouldn't hit
+                            writer.WriteLine(string.Format(
+                                $"unknown subreddit," +
+                                $"{Filter(post.Upvotes.ToString())}," +
+                                $"unknown content," +
+                                $"{Filter(post.Shortlink)}," +
+                                $"unknown content," +
+                                $"{Filter(post.Created.ToString())},"));
+                        }
                     }
-                    else if(post.GetType() == typeof(Post))
+                    catch
                     {
-                        var p = (Post)post;
-                        writer.WriteLine(string.Format(
-                            $"{Filter(p.SubredditName)}," +
-                            $"{Filter(p.Upvotes.ToString())}," +
-                            $"{Filter(p.Title)}," +
-                            $"{Filter(p.Shortlink)}," +
-                            $"{Filter(p.Url.ToString())}," +
-                            $"{Filter(p.Created.ToString())},"));
+                        failedEntries.Add(post);
+                        Console.WriteLine("Having trouble with this one. Skipping it and including it in the log file.");
                     }
-                    else
+                    finally
                     {
-                        //Theoretically, this shouldn't hit
-                        writer.WriteLine(string.Format(
-                            $"unknown subreddit," +
-                            $"{Filter(post.Upvotes.ToString())}," +
-                            $"unknown content," +
-                            $"{Filter(post.Shortlink)}," +
-                            $"unknown content," +
-                            $"{Filter(post.Created.ToString())},"));
+                        i++;
                     }
-                    i++;
                 }
                 writer.Close();
             }
             Console.WriteLine("File written to " + output);
+
+            if (failedEntries.Any())
+            {
+                Console.WriteLine($"{failedEntries.Count()} items could not be properly processed. If there is a log file in the folder where the exe lives, check there for more information.");
+            }
+
             Console.WriteLine("Press enter to exit.");
             Console.ReadLine();
+        }
+
+        private static void TryWriteLog(List<VotableThing> failedList)
+        {
+            try
+            {
+                using (var writer = new StreamWriter(@"./log.txt"))
+                {
+                    writer.WriteLine("The following items could not be processed: ");
+                    foreach (var post in failedList)
+                    {
+                        writer.WriteLine(string.Format($"{Filter(post.Shortlink)},"));
+                    }
+                    writer.Close();
+                }
+            }
+            catch
+            {
+                //"Can't really log anything if the log won't log, so I'll die silently for now."
+            }
         }
 
         public static string ReadPassword()
