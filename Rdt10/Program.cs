@@ -11,75 +11,103 @@ namespace Rdt10
 {
     class Program
     {
+        
         static void Main(string[] args)
         {
-            RedditSharp.Reddit reddit = null;
+            Reddit reddit = null;
             var authenticated = false;
-            var username = "fallingwalls";
-            var password = Program.ReadPassword();
+            
+            while (!authenticated)
+            {
+                Console.Write("Enter your reddit username: ");
+                var username = Console.ReadLine();
+                Console.Write("Enter your reddit password: ");
+                var password = ReadPassword();
+
+                try
+                {
+                    Console.WriteLine("Logging in...");
+                    reddit = new Reddit(username, password);
+                    authenticated = reddit.User != null;
+                }
+                catch (AuthenticationException)
+                {
+                    Console.WriteLine("Incorrect login. Try again.");
+                    authenticated = false;
+                }
+            }
+
             try
             {
-                Console.WriteLine("Logging in...");
-                reddit = new Reddit(username, password);
-                authenticated = reddit.User != null;
+                PersistSaved(reddit);
             }
-            catch (AuthenticationException)
+            catch (Exception e)
             {
-                Console.WriteLine("Incorrect login.");
-                authenticated = false;
-            }
-
-            //RemovePosts(reddit);
-            //RemoveComments(reddit);
-        }
-
-        private static void RemoveComments(Reddit reddit)
-        {
-            var updatedText = @"[removed]";
-            var commentList = reddit.User.Comments.Where(x => x.Created < DateTime.Now.AddDays(-7)).ToList();
-
-            foreach (var comment in commentList.Where(x => x.Body.Contains(updatedText)))
-            {
-                comment.Del();
-            }
-
-            using (var writer = new StreamWriter(@"C:/Users/tvokac/Desktop/Comments.csv"))
-            {
-                writer.WriteLine("Subreddit,Upvotes,Comment,Link,Gilded,Link Title,Created");
-
-                //Its not LinkId, 
-                foreach (var post in commentList)
+                Console.WriteLine("There was a problem: ");
+                Console.WriteLine(e.Message);
+                if(e.InnerException != null)
                 {
-                    writer.WriteLine(string.Format("{0},{1},{2},{3},{4},{5},{6}",
-                        Filter(post.Subreddit), //0
-                        Filter(post.Upvotes.ToString()), //1
-                        Filter(post.Body), //2
-                        Filter(post.Shortlink), //3
-                        Filter(post.Gilded.ToString()), //4
-                        Filter(post.LinkTitle),
-                        Filter(post.Created.ToString())));
-
-                    post.EditText(updatedText);
-                    post.Del();
+                    Console.WriteLine(e.InnerException.Message);
                 }
-                writer.Close();
+                Console.ReadLine();
             }
         }
 
-        private static void RemovePosts(Reddit reddit)
+        private static void PersistSaved(Reddit reddit)
         {
-            var postList = reddit.User.Posts;
-            using (var writer = new StreamWriter(@"C:/Users/tvokac/Desktop/Posts.csv"))
-            {
-                writer.WriteLine("Subreddit,Upvotes,Title,Link,Upvotes,Downvotes");
-                foreach (var post in postList)
-                {
-                    writer.WriteLine(string.Format("{0},{4},{2},{3},{1}, {5}", Filter(post.SubredditName), Filter(post.Created.ToString()), Filter(post.Title), Filter(post.Url.ToString()), Filter(post.Upvotes.ToString()), Filter(post.Downvotes.ToString())));
+            var output = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "RedditSaved.csv");
 
-                    post.Remove();
+            Console.WriteLine("Retreiving saved items. This may take several minutes if you have a lot of saved stuff.");
+            var savedList = reddit.User.GetSaved();
+            
+            using (var writer = new StreamWriter(output, append:false))
+            {
+                writer.WriteLine("Subreddit,Upvotes,Content,Comments URL,Content URL,Date posted");
+                var i = 1;
+
+                foreach (var post in savedList)
+                {
+                    Console.WriteLine($"Backing up saved item {i}...");
+                    if(post.GetType() == typeof(Comment))
+                    {
+                        var comment = (Comment)post;
+                        writer.WriteLine(string.Format(
+                            $"{Filter(comment.Subreddit)}," +
+                            $"{Filter(comment.Upvotes.ToString())}," +
+                            $"{Filter(comment.Body)}," +
+                            $"{Filter(comment.Shortlink)}," +
+                            $"{Filter("(comment, not post)")}," +
+                            $"{Filter(comment.Created.ToString())},"));
+                    }
+                    else if(post.GetType() == typeof(Post))
+                    {
+                        var p = (Post)post;
+                        writer.WriteLine(string.Format(
+                            $"{Filter(p.SubredditName)}," +
+                            $"{Filter(p.Upvotes.ToString())}," +
+                            $"{Filter(p.Title)}," +
+                            $"{Filter(p.Shortlink)}," +
+                            $"{Filter(p.Url.ToString())}," +
+                            $"{Filter(p.Created.ToString())},"));
+                    }
+                    else
+                    {
+                        //Theoretically, this shouldn't hit
+                        writer.WriteLine(string.Format(
+                            $"unknown subreddit," +
+                            $"{Filter(post.Upvotes.ToString())}," +
+                            $"unknown content," +
+                            $"{Filter(post.Shortlink)}," +
+                            $"unknown content," +
+                            $"{Filter(post.Created.ToString())},"));
+                    }
+                    i++;
                 }
                 writer.Close();
             }
+            Console.WriteLine("File written to " + output);
+            Console.WriteLine("Press enter to exit.");
+            Console.ReadLine();
         }
 
         public static string ReadPassword()
